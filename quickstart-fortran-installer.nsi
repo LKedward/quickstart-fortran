@@ -4,7 +4,7 @@
 !include "MUI2.nsh"
 
 ; Compress installer
-SetCompress on
+SetCompress auto
 
 ; Installer anme
 Name "Quickstart Fortran"
@@ -48,6 +48,8 @@ Section "-Quickstart Fortran" SecCore
   SetOutPath "$INSTDIR"
 
   File "quickstart_cmd.bat"
+  File "init.bat"
+  File /r "utils"
   File "fortran-lang.ico"
 
   CreateDirectory "$SMPROGRAMS\Quickstart Fortran"
