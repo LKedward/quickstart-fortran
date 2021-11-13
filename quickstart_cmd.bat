@@ -1,1 +1,1 @@
-start cmd /k "set PATH=%cd%\mingw64\bin;%cd%\MinGit\mingw64\bin;%cd%\fpm;%PATH% && echo # Quickstart Fortran Command Line && echo #"
+start cmd /k "init.bat"
