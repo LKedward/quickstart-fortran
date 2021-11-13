@@ -1,6 +1,9 @@
 name: Make installer
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
 
 env:
   GCC_DOWNLOAD: "https://github.com/brechtsanders/winlibs_mingw/releases/download/10.3.0-12.0.0-9.0.0-r2/winlibs-x86_64-posix-seh-gcc-10.3.0-mingw-w64-9.0.0-r2.zip"
@@ -49,3 +52,18 @@ jobs:
       with:
         name: quickstart-fortran-installer
         path: quickstart-fortran-installer.exe
+    
+    - name: Move/Create continuous tag
+      if: ${{ github.event_name != 'release' }}
+      run: |
+        git tag --force 'current' ${{ github.sha }}
+        git push --tags --force
+
+    - name: Upload to release
+      uses: svenstaro/upload-release-action@v2
+      if: ${{ github.event_name == 'release' }}
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: quickstart-fortran-installer.exe
+        tag: ${{ github.event_name == 'release' && github.ref || 'current'}}
+        overwrite: true
