@@ -1,6 +1,8 @@
 name: Make installer
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
   release:
     types: [published]
@@ -15,7 +17,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Setup MinGW (MSYS2)
       uses: msys2/setup-msys2@v2
@@ -53,15 +55,15 @@ jobs:
         name: quickstart-fortran-installer
         path: quickstart-fortran-installer.exe
     
-    - name: Move/Create continuous tag
+    - name: Create/Update tag
+      uses: rickstaa/action-create-tag@v1.2.0
       if: ${{ github.event_name != 'release' }}
-      run: |
-        git tag --force 'current' ${{ github.sha }}
-        git push --tags --force
+      with:
+        tag: 'current'
+        force_push_tag: true
 
     - name: Upload to release
       uses: svenstaro/upload-release-action@v2
-      if: ${{ github.event_name == 'release' }}
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: quickstart-fortran-installer.exe
