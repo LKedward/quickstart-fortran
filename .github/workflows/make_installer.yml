@@ -56,11 +56,10 @@ jobs:
         path: quickstart-fortran-installer.exe
     
     - name: Create/Update tag
-      uses: rickstaa/action-create-tag@v1.2.0
       if: ${{ github.event_name != 'release' }}
-      with:
-        tag: 'current'
-        force_push_tag: true
+      run: |
+        git tag --force 'current' ${{ github.sha }}
+        git push --tags --force
 
     - name: Upload to release
       uses: svenstaro/upload-release-action@v2
