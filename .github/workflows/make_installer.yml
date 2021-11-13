@@ -1,0 +1,51 @@
+name: Make installer
+
+on: [push, pull_request]
+
+env:
+  GCC_DOWNLOAD: "https://github.com/brechtsanders/winlibs_mingw/releases/download/10.3.0-12.0.0-9.0.0-r2/winlibs-x86_64-posix-seh-gcc-10.3.0-mingw-w64-9.0.0-r2.zip"
+  GIT_DOWNLOAD: "https://github.com/git-for-windows/git/releases/download/v2.33.1.windows.1/MinGit-2.33.1-64-bit.zip"
+  FPM_DOWNLOAD: "https://github.com/fortran-lang/fpm/releases/download/v0.4.0/fpm-0.4.0-windows-x86_64.exe"
+
+jobs:
+  make_installer:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v1
+
+    - name: Setup MinGW (MSYS2)
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: false
+        install: >-
+          wget
+          unzip
+          
+    - name: Fetch Mingw-w64
+      shell: msys2 {0}
+      run: |
+        wget $GCC_DOWNLOAD -O mingw-w64.zip
+        unzip mingw-w64.zip
+
+    - name: Fetch Git for Windows
+      shell: msys2 {0}
+      run: |
+        wget $GIT_DOWNLOAD -O MinGit.zip
+        unzip MinGit.zip -d MinGit
+    
+    - name: Fetch FPM
+      shell: msys2 {0}
+      run: |
+        mkdir fpm
+        wget $FPM_DOWNLOAD -O fpm/fpm.exe
+
+    - name: Generate installer
+      run: makensis quickstart-fortran-installer.nsi
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: quickstart-fortran-installer
+        path: quickstart-fortran-installer.exe
