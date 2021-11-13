@@ -4,7 +4,7 @@
 !include "MUI2.nsh"
 
 ; Compress installer
-SetCompress off
+SetCompress on
 
 ; Installer anme
 Name "Quickstart Fortran"
