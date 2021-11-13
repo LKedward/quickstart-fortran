@@ -27,6 +27,7 @@ jobs:
         install: >-
           wget
           unzip
+          mingw-w64-x86_64-openblas
           
     - name: Fetch Mingw-w64
       shell: msys2 {0}
@@ -45,6 +46,16 @@ jobs:
       run: |
         mkdir fpm
         wget $FPM_DOWNLOAD -O fpm/fpm.exe
+
+    - name: Fetch OpenBLAS
+      shell: msys2 {0}
+      run: |
+        mkdir OpenBLAS
+        cp /mingw64/bin/libopenblas.dll ./mingw64/bin/
+        cp -r /mingw64/include/OpenBLAS ./mingw64/include
+        cp -r /mingw64/lib/libopenblas.* ./mingw64/lib/
+        mkdir ./mingw64/share/licenses
+        cp -r /mingw64/share/licenses/OpenBLAS ./mingw64/share/licenses/
 
     - name: Generate installer
       run: makensis quickstart-fortran-installer.nsi
