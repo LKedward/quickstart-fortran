@@ -16,6 +16,8 @@ Name "Quickstart Fortran"
 ; Compress installer
 SetCompress auto
 
+; Always produce unicode installer
+Unicode true
 
 ; ---------------- Setup ----------------
 ; Use EnVar plugin (https://nsis.sourceforge.io/EnVar_plug-in)
