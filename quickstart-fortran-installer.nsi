@@ -36,7 +36,7 @@ RequestExecutionLevel user
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
 
-
+!addplugindir ".\nsis-plugins\EnVar_plugin\Plugins\x86-unicode"
 
   
 ; Language
@@ -98,6 +98,17 @@ Section "Desktop Shortcut" SecDesktopShortcut
 
 SectionEnd
 
+Section "Add to path" SecPath
+
+  EnVar::SetHKCU
+
+  EnVar::AddValue "PATH" "$INSTDIR\mingw64\bin"
+  EnVar::AddValue "PATH" "$INSTDIR\fpm"
+  EnVar::AddValue "PATH" "$INSTDIR\MinGit\mingw64\bin"
+  EnVar::AddValue "PATH" "$INSTDIR\utils"
+
+SectionEnd
+
 
 
 ;--------------------------------
@@ -108,6 +119,7 @@ LangString DESC_SecGFortran ${LANG_ENGLISH} "The open source GCC GFortran compil
 LangString DESC_SecFPM ${LANG_ENGLISH} "The Fortran Package Manager"
 LangString DESC_SecGit ${LANG_ENGLISH} "Git version control (required for FPM)"
 LangString DESC_SecDesktopShortcut ${LANG_ENGLISH} "Desktop shortcut to command line launcher"
+LangString DESC_SecPath ${LANG_ENGLISH} "Add new installation to user PATH variable"
 
 ;Assign language strings to sections
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -115,6 +127,7 @@ LangString DESC_SecDesktopShortcut ${LANG_ENGLISH} "Desktop shortcut to command 
   !insertmacro MUI_DESCRIPTION_TEXT ${SecFPM} $(DESC_SecFPM)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecGit} $(DESC_SecGit)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecDesktopShortcut} $(DESC_SecDesktopShortcut)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecPath} $(DESC_SecPath)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
@@ -128,5 +141,12 @@ Section "Uninstall"
   RMDir /r "$SMPROGRAMS\Quickstart Fortran"
 
   DeleteRegKey /ifempty HKCU "Software\quickstart_fortran"
+
+  EnVar::SetHKCU
+
+  EnVar::DeleteValue "PATH" "$INSTDIR\mingw64\bin"
+  EnVar::DeleteValue "PATH" "$INSTDIR\fpm"
+  EnVar::DeleteValue "PATH" "$INSTDIR\MinGit\mingw64\bin"
+  EnVar::DeleteValue "PATH" "$INSTDIR\utils"
 
 SectionEnd
