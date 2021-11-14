@@ -1,8 +1,6 @@
 name: Make installer
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
   release:
     types: [published]
@@ -69,7 +67,7 @@ jobs:
     - name: Create/Update tag
       if: ${{ github.event_name != 'release' }}
       run: |
-        git tag --force 'current' ${{ github.sha }}
+        git tag --force 'Latest' ${{ github.sha }}
         git push --tags --force
 
     - name: Upload to release
@@ -77,5 +75,5 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: quickstart-fortran-installer.exe
-        tag: ${{ github.event_name == 'release' && github.ref || 'current'}}
+        tag: ${{ github.event_name == 'release' && github.ref || 'Latest'}}
         overwrite: true
