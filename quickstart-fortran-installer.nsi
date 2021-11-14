@@ -1,29 +1,37 @@
 ; NSIS Installer script for the Quickstart Fortran Command Line
 
-; 'Modern' Installer UI macros
-!include "MUI2.nsh"
-
-; Compress installer
-SetCompress auto
-
-; Installer anme
+; ---------------- Properties ----------------
+; Name used in installer GUI
 Name "Quickstart Fortran"
 
-; Default installation folder (local)
-InstallDir "$LOCALAPPDATA\quickstart_fortran"
-  
-; Get installation folder from registry if available
-InstallDirRegKey HKCU "Software\quickstart_fortran" ""
+; Name for folder location and reg key
+!define INSTALL_NAME "quickstart_fortran"
 
-; Request application privileges
-RequestExecutionLevel user
-
-; Interface Settings
-!define MUI_ABORTWARNING
+; Name of Start Menu group folder
+!define SM_FOLDER "Quickstart Fortran"
 
 ; Installer icon
 !define MUI_ICON "fortran-lang.ico"
 
+; Compress installer
+SetCompress auto
+
+
+; ---------------- Setup ----------------
+; Use EnVar plugin (https://nsis.sourceforge.io/EnVar_plug-in)
+!addplugindir ".\nsis-plugins\EnVar_plugin\Plugins\x86-unicode"
+
+; Use the 'Modern' Installer UI macros
+!include "MUI2.nsh"
+
+; Default installation folder (local)
+InstallDir "$LOCALAPPDATA\${INSTALL_NAME}"
+  
+; Get installation folder from registry if available
+InstallDirRegKey HKCU "Software\${INSTALL_NAME}" ""
+
+; Request application privileges
+RequestExecutionLevel user
 
 
 ; ---------------- Installer Pages ----------------
@@ -36,13 +44,12 @@ RequestExecutionLevel user
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
 
-!addplugindir ".\nsis-plugins\EnVar_plugin\Plugins\x86-unicode"
-
   
-; Language
+; MUI Language
 !insertmacro MUI_LANGUAGE "English"
 
 
+; ---------------- Component: Core Installation ----------------
 Section "-Quickstart Fortran" SecCore
 
   SetOutPath "$INSTDIR"
@@ -52,19 +59,20 @@ Section "-Quickstart Fortran" SecCore
   File /r "utils"
   File "fortran-lang.ico"
 
-  CreateDirectory "$SMPROGRAMS\Quickstart Fortran"
-  CreateShortcut "$SMPROGRAMS\Quickstart Fortran\Launch Command Line.lnk" "$INSTDIR\quickstart_cmd.bat" "" "$INSTDIR\fortran-lang.ico"
-  CreateShortcut "$SMPROGRAMS\Quickstart Fortran\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+  CreateDirectory "$SMPROGRAMS\${SM_FOLDER}"
+  CreateShortcut "$SMPROGRAMS\${SM_FOLDER}\Launch Command Line.lnk" "$INSTDIR\quickstart_cmd.bat" "" "$INSTDIR\fortran-lang.ico"
+  CreateShortcut "$SMPROGRAMS\${SM_FOLDER}\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 
-  ;Store installation folder
-  WriteRegStr HKCU "Software\quickstart_fortran" "" $INSTDIR
+  ; Store installation folder
+  WriteRegStr HKCU "Software\${INSTALL_NAME}" "" $INSTDIR
   
-  ;Create uninstaller
+  ; Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
 SectionEnd
 
 
+; ---------------- Component: Mingw64 ----------------
 Section "GFortran Compiler" SecGFortran
 
   SetOutPath "$INSTDIR"
@@ -74,6 +82,7 @@ Section "GFortran Compiler" SecGFortran
 SectionEnd
 
 
+; ---------------- Component: fpm ----------------
 Section "FPM" SecFPM
 
   SetOutPath "$INSTDIR"
@@ -83,6 +92,7 @@ Section "FPM" SecFPM
 SectionEnd
 
 
+; ---------------- Component: Git ----------------
 Section "Git for Windows" SecGit
 
   SetOutPath "$INSTDIR"
@@ -92,12 +102,15 @@ Section "Git for Windows" SecGit
 SectionEnd
 
 
+; ---------------- Component: Desktop Shortcut ----------------
 Section "Desktop Shortcut" SecDesktopShortcut
 
   CreateShortcut "$DESKTOP\QuickStart Fortran Command Line.lnk" "$INSTDIR\quickstart_cmd.bat" "" "$INSTDIR\fortran-lang.ico"
 
 SectionEnd
 
+
+; ---------------- Component: Add to PATH ----------------
 Section "Add to path" SecPath
 
   EnVar::SetHKCU
@@ -110,37 +123,15 @@ Section "Add to path" SecPath
 SectionEnd
 
 
-
-;--------------------------------
-;Descriptions
-
-;Language strings
-LangString DESC_SecGFortran ${LANG_ENGLISH} "The open source GCC GFortran compiler for Windows (MinGW-w64-msvcrt, winlibs.com)"
-LangString DESC_SecFPM ${LANG_ENGLISH} "The Fortran Package Manager"
-LangString DESC_SecGit ${LANG_ENGLISH} "Git version control (required for FPM)"
-LangString DESC_SecDesktopShortcut ${LANG_ENGLISH} "Desktop shortcut to command line launcher"
-LangString DESC_SecPath ${LANG_ENGLISH} "Add new installation to user PATH variable"
-
-;Assign language strings to sections
-!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecGFortran} $(DESC_SecGFortran)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecFPM} $(DESC_SecFPM)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecGit} $(DESC_SecGit)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecDesktopShortcut} $(DESC_SecDesktopShortcut)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecPath} $(DESC_SecPath)
-!insertmacro MUI_FUNCTION_DESCRIPTION_END
-
-
-
-; Uninstaller
+; ---------------- Uninstaller ----------------
 Section "Uninstall"
 
   Delete "$DESKTOP\QuickStart Fortran Command Line.lnk"
 
   RMDir /r "$INSTDIR"
-  RMDir /r "$SMPROGRAMS\Quickstart Fortran"
+  RMDir /r "$SMPROGRAMS\${SM_FOLDER}"
 
-  DeleteRegKey /ifempty HKCU "Software\quickstart_fortran"
+  DeleteRegKey /ifempty HKCU "Software\${INSTALL_NAME}"
 
   EnVar::SetHKCU
 
@@ -150,3 +141,20 @@ Section "Uninstall"
   EnVar::DeleteValue "PATH" "$INSTDIR\utils"
 
 SectionEnd
+
+
+; ---------------- Component description Strings (EN) ----------------
+LangString DESC_SecGFortran ${LANG_ENGLISH} "The open source GCC GFortran compiler for Windows (MinGW-w64-msvcrt, winlibs.com)"
+LangString DESC_SecFPM ${LANG_ENGLISH} "The Fortran Package Manager"
+LangString DESC_SecGit ${LANG_ENGLISH} "Git version control (required for FPM)"
+LangString DESC_SecDesktopShortcut ${LANG_ENGLISH} "Desktop shortcut to command line launcher"
+LangString DESC_SecPath ${LANG_ENGLISH} "Add new installation to user PATH variable"
+
+
+!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecGFortran} $(DESC_SecGFortran)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecFPM} $(DESC_SecFPM)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecGit} $(DESC_SecGit)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDesktopShortcut} $(DESC_SecDesktopShortcut)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecPath} $(DESC_SecPath)
+!insertmacro MUI_FUNCTION_DESCRIPTION_END
