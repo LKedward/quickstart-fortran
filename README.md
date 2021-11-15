@@ -27,6 +27,28 @@ __Note: the installer takes a little while to startup due to it size, please be 
 
 No, the installer will install files to the `AppData` directory for the current user (`C:\Users\<user>\AppData\Local`).
 
+### What is 'Add to path' and do I need it?
+
+The 'Add to path' installer option will update the Windows PATH variable for the local user
+so that all the installed components are available to other applications.
+This means that you can call `gfortran` or *fpm* from any command window or code editor/IDE.
+
+Alternatively, you may create an 'isolated' installation by unchecking the 'Add to path' option
+when installing. In this case, the installed programs are only made available when you use the
+'Quickstart Fortran' command line shortcut added to the desktop and start menu.
+
+### Can I use this with the Intel OneAPI Compiler?
+
+Yes. The installation adds a helper command `intel-setvars` to setup the intel environment
+(this must be called each time you open a new command window.).
+The helper script assumes OneAPI is installed at `C:\Program Files (x86)\Intel\oneAPI`.
+
+After setting up the intel environment, you may use `ifort` with *fpm* by appending
+`--compiler ifort` to each *fpm* command or by setting the environment variable:
+
+```batch
+> set FPM_COMPILER=ifort
+```
 
 ### How can I install `stdlib` with this?
 
@@ -36,8 +58,15 @@ At the command window type `setup-stdlib` and press ENTER.
 This will fetch the latest version of `stdlib` and install it to the local GFortran installation.
 
 __Note: The `setup-stdlib` script only works with the GFortran installation provided with this installer - it cannot
-currently detect existing GFortran installations.__
+currently detect existing GFortran or Intel fortran installations.__
 
+### How do I uninstall?
+
+There is an uninstall program which may be launched from the start menu:
+
+```
+Start menu > All programs > Quickstart Fortran > Uninstall
+```
 
 ## About
 
