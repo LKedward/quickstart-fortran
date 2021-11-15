@@ -4,6 +4,8 @@ __An easy Windows installer and launcher for GFortran and the Fortran Package Ma
 
 Download the latest installer from the [__Releases Page__](https://github.com/LKedward/quickstart-fortran/releases/tag/Latest)
 
+__Note: the installer takes a little while to startup due to it size, please be patient.__
+
 ![quickstart-fortran-installer-screenshot](screenshot.png)
 
 ## Features
@@ -19,6 +21,22 @@ Download the latest installer from the [__Releases Page__](https://github.com/LK
   - `intel-setvars` to initialise the Intel OneAPI environment (if installed)
   - `setup-stdlib` to build and install the latest version of the Fortran Standard Library 
 
+## FAQ
+
+### Do I need to be administrator to install this?
+
+No, the installer will install files to the `AppData` directory for the current user (`C:\Users\<user>\AppData\Local`).
+
+
+### How can I install `stdlib` with this?
+
+First, run the installer, making sure that GFortran, fpm and Git are selected. After install,
+open up the commmand window using the `Quickstart Fortran` shortcut on the desktop or in the start menu.
+At the command window type `setup-stdlib` and press ENTER.
+This will fetch the latest version of `stdlib` and install it to the local GFortran installation.
+
+__Note: The `setup-stdlib` script only works with the GFortran installation provided with this installer - it cannot
+currently detect existing GFortran installations.__
 
 
 ## About
