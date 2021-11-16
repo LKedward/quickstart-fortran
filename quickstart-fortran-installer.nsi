@@ -60,7 +60,9 @@ Section "-Quickstart Fortran" SecCore
   File "init.bat"
   File /r "utils"
   File "fortran-lang.ico"
-
+  
+  ; The output directory will be the shortcut working directory
+  SetOutPath "$DOCUMENTS"
   CreateDirectory "$SMPROGRAMS\${SM_FOLDER}"
   CreateShortcut "$SMPROGRAMS\${SM_FOLDER}\Launch Command Line.lnk" "$INSTDIR\quickstart_cmd.bat" "" "$INSTDIR\fortran-lang.ico"
   CreateShortcut "$SMPROGRAMS\${SM_FOLDER}\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
@@ -106,6 +108,9 @@ SectionEnd
 
 ; ---------------- Component: Desktop Shortcut ----------------
 Section "Desktop Shortcut" SecDesktopShortcut
+
+  ; The output directory will be the shortcut working directory
+  SetOutPath "$DOCUMENTS"
 
   CreateShortcut "$DESKTOP\QuickStart Fortran Command Line.lnk" "$INSTDIR\quickstart_cmd.bat" "" "$INSTDIR\fortran-lang.ico"
 
