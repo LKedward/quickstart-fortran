@@ -1,1 +1,1 @@
-start cmd /k "init.bat"
+start cmd /k "%~dp0init.bat"
