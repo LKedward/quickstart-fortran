@@ -2,7 +2,7 @@
 
 __An easy Windows installer and launcher for GFortran and the Fortran Package Manager__
 
-Download the latest installer from the [__Releases Page__](https://github.com/LKedward/quickstart-fortran/releases/tag/Latest)
+Download the latest installer from the [__Releases Page__](https://github.com/LKedward/quickstart-fortran/releases)
 
 __Note: the installer takes a little while to startup due to it size, please be patient.__
 
