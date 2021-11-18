@@ -17,6 +17,7 @@ __Note: the installer takes a little while to startup due to it size, please be 
   - Fortran Package Manager v0.4.0
   - Git for Windows v2.33.1 (_needed for fpm_)
   - OpenBLAS (BLAS/LAPACK) v0.3.17-1
+  - GNU make v4.3
 - Extra utility commands
   - `intel-setvars` to initialise the Intel OneAPI environment (if installed)
   - `setup-stdlib` to build and install the latest version of the Fortran Standard Library 
