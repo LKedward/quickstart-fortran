@@ -61,6 +61,16 @@ This will fetch the latest version of `stdlib` and install it to the local GFort
 __Note: The `setup-stdlib` script only works with the GFortran installation provided with this installer - it cannot
 currently detect existing GFortran or Intel fortran installations.__
 
+### How do I compile with BLAS/LAPACK?
+
+The optimized OpenBLAS library is included with the GCC installation.
+Use the link flag `-lopenblas` or add the following to your `fpm.toml` file:
+
+```toml
+[build]
+link = "openblas"
+```
+
 ### How do I uninstall?
 
 There is an uninstall program which may be launched from the start menu:
