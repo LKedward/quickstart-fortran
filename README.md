@@ -2,7 +2,7 @@
 
 __An easy Windows installer and launcher for GFortran and the Fortran Package Manager__
 
-Download the latest installer from the [__Releases Page__](https://github.com/LKedward/quickstart-fortran/releases/tag/Latest)
+Download the latest installer from the [__Releases Page__](https://github.com/LKedward/quickstart-fortran/releases)
 
 __Note: the installer takes a little while to startup due to it size, please be patient.__
 
@@ -17,6 +17,7 @@ __Note: the installer takes a little while to startup due to it size, please be 
   - Fortran Package Manager v0.4.0
   - Git for Windows v2.33.1 (_needed for fpm_)
   - OpenBLAS (BLAS/LAPACK) v0.3.17-1
+  - GNU make v4.3
 - Extra utility commands
   - `intel-setvars` to initialise the Intel OneAPI environment (if installed)
   - `setup-stdlib` to build and install the latest version of the Fortran Standard Library 
@@ -59,6 +60,16 @@ This will fetch the latest version of `stdlib` and install it to the local GFort
 
 __Note: The `setup-stdlib` script only works with the GFortran installation provided with this installer - it cannot
 currently detect existing GFortran or Intel fortran installations.__
+
+### How do I compile with BLAS/LAPACK?
+
+The optimized OpenBLAS library is included with the GCC installation.
+Use the link flag `-lopenblas` or add the following to your `fpm.toml` file:
+
+```toml
+[build]
+link = "openblas"
+```
 
 ### How do I uninstall?
 
