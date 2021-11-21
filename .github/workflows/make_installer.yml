@@ -8,7 +8,7 @@ on:
 env:
   GCC_DOWNLOAD: "https://github.com/brechtsanders/winlibs_mingw/releases/download/10.3.0-12.0.0-9.0.0-r2/winlibs-x86_64-posix-seh-gcc-10.3.0-mingw-w64-9.0.0-r2.zip"
   GIT_DOWNLOAD: "https://github.com/git-for-windows/git/releases/download/v2.33.1.windows.1/MinGit-2.33.1-64-bit.zip"
-  FPM_DOWNLOAD: "https://github.com/fortran-lang/fpm/releases/download/v0.4.0/fpm-0.4.0-windows-x86_64.exe"
+  FPM_DOWNLOAD: "https://github.com/fortran-lang/fpm/releases/download/v0.5.0/fpm-0.5.0-windows-x86_64.exe"
   ENVAR_DOWNLOAD: "https://github.com/GsNSIS/EnVar/releases/download/v0.3.1/EnVar-Plugin.zip"
 
 jobs:
