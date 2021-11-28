@@ -34,17 +34,36 @@ jobs:
         wget $GCC_DOWNLOAD -O mingw-w64.zip
         unzip mingw-w64.zip
 
+    - name: Add Mingw-w64 to path to build fpm
+      run: echo "$pwd\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+    - name: Checkout fpm code
+      uses: actions/checkout@v2
+      with:
+        repository: fortran-lang/fpm
+        ref: v0.5.0
+        path: fpm-src
+    
+    - name: Install fpm for bootstrapping
+      uses: fortran-lang/setup-fpm@v3
+      with:
+        fpm-version: 'v0.5.0'
+
+    - name: Build fpm from source with OpenMP
+      run: |
+        mkdir fpm
+        gfortran --version
+        fpm run -C fpm-src --profile release --flag "-fopenmp --static" --runner copy -- ..\fpm\
+
+    - name: Remove fpm src
+      shell: msys2 {0}
+      run: rm -rf fpm-src
+
     - name: Fetch Git for Windows
       shell: msys2 {0}
       run: |
         wget $GIT_DOWNLOAD -O MinGit.zip
         unzip MinGit.zip -d MinGit
-    
-    - name: Fetch FPM
-      shell: msys2 {0}
-      run: |
-        mkdir fpm
-        wget $FPM_DOWNLOAD -O fpm/fpm.exe
 
     - name: Fetch EnVar Plugin for NSIS
       shell: msys2 {0}
@@ -71,17 +90,12 @@ jobs:
       with:
         name: quickstart-fortran-installer
         path: quickstart-fortran-installer.exe
-    
-    - name: Create/Update tag
-      if: ${{ github.event_name != 'release' }}
-      run: |
-        git tag --force 'Latest' ${{ github.sha }}
-        git push --tags --force
 
     - name: Upload to release
+      if: ${{ github.event_name == 'release' }}
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: quickstart-fortran-installer.exe
-        tag: ${{ github.event_name == 'release' && github.ref || 'Latest'}}
+        tag: ${{ github.ref }}
         overwrite: true
