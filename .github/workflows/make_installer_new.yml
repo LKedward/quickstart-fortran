@@ -1,0 +1,179 @@
+name: Make installer 2
+
+on:
+  push:
+  release:
+    types: [published]
+
+env:
+  GCC_DOWNLOAD: "https://github.com/brechtsanders/winlibs_mingw/releases/download/10.3.0-12.0.0-9.0.0-r2/winlibs-x86_64-posix-seh-gcc-10.3.0-mingw-w64-9.0.0-r2.zip"
+  GIT_DOWNLOAD: "https://github.com/git-for-windows/git/releases/download/v2.33.1.windows.1/MinGit-2.33.1-64-bit.zip"
+  FPM_DOWNLOAD: "https://github.com/fortran-lang/fpm/releases/download/v0.5.0/fpm-0.5.0-windows-x86_64.exe"
+  ENVAR_DOWNLOAD: "https://github.com/GsNSIS/EnVar/releases/download/v0.3.1/EnVar-Plugin.zip"
+
+jobs:
+
+  get-git:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download
+      run: |
+        wget $GIT_DOWNLOAD -O MinGit.zip
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: MinGit
+        path: MinGit.zip
+
+  get-envar:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download
+      run: |
+        wget $ENVAR_DOWNLOAD -O EnVar-Plugin.zip
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: nsis-plugins
+        path: EnVar-Plugin.zip
+
+  get-openblas:
+    runs-on: windows-latest
+    steps:
+    - name: Setup MSYS2
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: false
+        install: >-
+          mingw-w64-x86_64-openblas
+
+    - name: Collect
+      shell: msys2 {0}
+      run: |
+        mkdir OpenBLAS
+        cp /mingw64/bin/libopenblas.dll ./OpenBLAS/
+        cp -r /mingw64/include/OpenBLAS ./OpenBLAS/
+        cp -r /mingw64/lib/libopenblas.* ./OpenBLAS/
+        cp -r /mingw64/share/licenses/OpenBLAS/* ./OpenBLAS/
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: OpenBLAS
+        path: OpenBLAS/*
+
+  get-mingw64:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download
+      run: |
+        wget $GCC_DOWNLOAD -O mingw-w64.zip
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: mingw64
+        path: mingw-w64.zip
+
+  build-fpm:
+    runs-on: windows-latest
+    needs: 
+      - get-mingw64
+    steps:
+    - name: Download Artifacts
+      uses: actions/download-artifact@v2
+      with:
+        path: ${{ github.workspace }}
+    
+    - name: Checkout fpm code
+      uses: actions/checkout@v2
+      with:
+        repository: fortran-lang/fpm
+        ref: v0.5.0
+        path: fpm-src
+
+    - name: list files
+      shell: cmd
+      run: dir /s /b
+
+    - name: Install GFortran Windows
+      run: |
+        Expand-Archive mingw64/mingw-w64.zip -DestinationPath .\
+        echo "$pwd\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+    - name: Check gfortran
+      shell: cmd
+      run: |
+        dir /b
+        gfortran --version
+        where gfortran
+
+    - name: Install fpm for bootstrapping
+      uses: fortran-lang/setup-fpm@v3
+      with:
+        fpm-version: 'v0.5.0'
+
+    - name: Build fpm from source with OpenMP
+      run: |
+        fpm run -C fpm-src --profile release --flag "-fopenmp --static" --runner copy -- ..\
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: fpm
+        path: fpm.exe
+  
+  build-installer:
+    runs-on: windows-latest
+    needs: 
+      - get-git
+      - get-envar
+      - get-openblas
+      - get-mingw64
+      - build-fpm
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Download Artifacts
+      uses: actions/download-artifact@v2
+      with:
+        path: ${{ github.workspace }}
+
+    - name: list files
+      shell: cmd
+      run: dir /s /b
+
+    - name: Unzip artifacts
+      run: |
+        Expand-Archive mingw64\mingw-w64.zip -DestinationPath .\
+        Expand-Archive MinGit\MinGit.zip -DestinationPath .\MinGit
+        Expand-Archive nsis-plugins\EnVar-Plugin.zip -DestinationPath .\nsis-plugins\EnVar_plugin
+        Remove-Item mingw64\mingw-w64.zip
+        Remove-Item MinGit\MinGit.zip
+        Remove-Item nsis-plugins\EnVar-Plugin.zip
+
+    - name: list files
+      shell: cmd
+      run: dir /s /b
+
+    - name: Get OpenBLAS Files
+      shell: bash
+      run: |
+        mv OpenBLAS/libopenblas.dll ./mingw64/bin/
+        mv OpenBLAS/OpenBLAS ./mingw64/include/
+        mv OpenBLAS/libopenblas* ./mingw64/lib/
+        mkdir ./mingw64/share/licenses
+        mv OpenBLAS/LICENSE* ./mingw64/share/licenses/
+
+    - name: Generate installer
+      run: makensis quickstart-fortran-installer.nsi
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: quickstart-fortran-installer
+        path: quickstart-fortran-installer.exe
