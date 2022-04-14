@@ -2,6 +2,7 @@ name: Make installer
 
 on:
   workflow_dispatch:
+  push:
   release:
     types: [published]
 
@@ -13,7 +14,7 @@ env:
 
 jobs:
   make_installer:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -99,3 +100,41 @@ jobs:
         file: quickstart-fortran-installer.exe
         tag: ${{ github.ref }}
         overwrite: true
+
+  test_installer:
+    runs-on: windows-2022
+    needs:
+      - make_installer
+    steps:
+    - name: Download Artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: quickstart-fortran-installer
+        path: ${{ github.workspace }} # This will download all files
+
+    - name: Remove existing Git installations from PATH
+      shell: cmd
+      run: |
+        mv "C:\Program Files\Git\bin\git.exe" "C:\Program Files\Git\bin\git-old.exe"
+        mv "C:\Program Files\Git\cmd\git.exe" "C:\Program Files\Git\cmd\git-old.exe"
+        mv "C:\Program Files\Git\mingw64\bin\git.exe" "C:\Program Files\Git\mingw64\bin\git-old.exe"
+
+    - name: Run Quickstart-Fortran installer
+      shell: cmd
+      run: .\quickstart-fortran-installer.exe /S
+
+    - name: Update path manually
+      run: |
+        echo "$env:LOCALAPPDATA\quickstart_fortran\fpm" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+        echo "$env:LOCALAPPDATA\quickstart_fortran\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        echo "$env:LOCALAPPDATA\quickstart_fortran\MinGit\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        echo "$env:LOCALAPPDATA\quickstart_fortran\utils" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+    - name: Check installation
+      shell: cmd
+      run: |
+        where fpm
+        where git
+        fpm --version
+        git --version
+        setup-stdlib
