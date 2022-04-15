@@ -13,7 +13,7 @@ __Note: the installer takes a little while to startup due to it size, please be 
 - Installs locally, __no adminstrator account__ required
 - Optionally add everything to the PATH for the local user
 - Includes:
-  - GCC-GFortran 10.3.0
+  - GCC-GFortran 11.2.0
   - Fortran Package Manager v0.5.0
   - Git for Windows v2.33.1 (_needed for fpm_)
   - OpenBLAS (BLAS/LAPACK) v0.3.17-1
@@ -86,7 +86,7 @@ The installer is built using the [Nullsoft Scriptable Install System](https://ns
 See [`quickstart-fortran-installer.nsi`](./quickstart-fortran-installer.nsi) for the configuration file and
 [`make_installer.yml`](./.github/workflows/make_installer.yml) for the Github actions workflow.
 
-The GNU Compiler Collection v10.3.0
+The GNU Compiler Collection v11.2.0
 is sourced from [WinLibs](https://winlibs.com/) based on the [MinGW-w64](https://www.mingw-w64.org/) project linked with MSVCRT.
 
 
