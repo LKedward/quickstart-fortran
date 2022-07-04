@@ -14,7 +14,7 @@ __Note: the installer takes a little while to startup due to it size, please be 
 - Optionally add everything to the PATH for the local user
 - Includes:
   - GCC-GFortran 11.2.0
-  - Fortran Package Manager v0.5.0
+  - Fortran Package Manager v0.6.0
   - Git for Windows v2.35.2 (_needed for fpm_)
   - OpenBLAS (BLAS/LAPACK) v0.3.20-1
   - GNU make v4.3
