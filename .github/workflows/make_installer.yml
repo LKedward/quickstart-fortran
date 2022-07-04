@@ -9,7 +9,6 @@ on:
 env:
   GCC_DOWNLOAD: "https://github.com/brechtsanders/winlibs_mingw/releases/download/11.2.0-9.0.0-msvcrt-r6/winlibs-x86_64-posix-seh-gcc-11.2.0-mingw-w64-9.0.0-r6.zip"
   GIT_DOWNLOAD: "https://github.com/git-for-windows/git/releases/download/v2.35.2.windows.1/MinGit-2.35.2-64-bit.zip"
-  FPM_DOWNLOAD: "https://github.com/fortran-lang/fpm/releases/download/v0.6.0/fpm-0.6.0-windows-x86_64.exe"
   ENVAR_DOWNLOAD: "https://github.com/GsNSIS/EnVar/releases/download/v0.3.1/EnVar-Plugin.zip"
 
 jobs:
@@ -42,7 +41,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: fortran-lang/fpm
-        ref: v0.5.0
+        ref: v0.6.0
         path: fpm-src
     
     - name: Install fpm for bootstrapping
