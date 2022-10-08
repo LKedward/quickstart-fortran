@@ -64,11 +64,11 @@ currently detect existing GFortran or Intel fortran installations.__
 ### How do I compile with BLAS/LAPACK?
 
 The optimized OpenBLAS library is included with the GCC installation.
-Use the link flag `-lopenblas` or add the following to your `fpm.toml` file:
+Use the link flags `-llapack -lblas` or add the following to your `fpm.toml` file:
 
 ```toml
 [build]
-link = "openblas"
+link = ["lapack", "blas"]
 ```
 
 ### How do I uninstall?
