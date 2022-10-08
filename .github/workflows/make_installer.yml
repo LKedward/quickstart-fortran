@@ -85,6 +85,10 @@ jobs:
         cp /mingw64/bin/libopenblas.dll ./mingw64/bin/
         cp -r /mingw64/include/OpenBLAS ./mingw64/include
         cp -r /mingw64/lib/libopenblas.* ./mingw64/lib/
+        cp ./mingw64/lib/libopenblas.a ./mingw64/lib/libblas.a
+        cp ./mingw64/lib/libopenblas.a ./mingw64/lib/liblapack.a
+        cp ./mingw64/lib/libopenblas.dll.a ./mingw64/lib/libblas.dll.a
+        cp ./mingw64/lib/libopenblas.dll.a ./mingw64/lib/liblapack.dll.a
         mkdir ./mingw64/share/licenses
         cp -r /mingw64/share/licenses/OpenBLAS ./mingw64/share/licenses/
 
