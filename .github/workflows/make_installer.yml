@@ -7,8 +7,8 @@ on:
     types: [published]
 
 env:
-  GCC_DOWNLOAD: "https://github.com/brechtsanders/winlibs_mingw/releases/download/11.2.0-9.0.0-msvcrt-r6/winlibs-x86_64-posix-seh-gcc-11.2.0-mingw-w64-9.0.0-r6.zip"
-  GCC_DIGEST: "61118ef6740579b4d3afb6ccce0d60cc651c19d27e11d79fd5b94047384b9d14"
+  GCC_DOWNLOAD: "https://github.com/brechtsanders/winlibs_mingw/releases/download/12.2.0-14.0.6-10.0.0-msvcrt-r2/winlibs-x86_64-posix-seh-gcc-12.2.0-mingw-w64msvcrt-10.0.0-r2.zip"
+  GCC_DIGEST: "06be414c7d2e4b91bcfd089d693d942d824e686d244a25709e72a78d30b82ea4"
   GIT_DOWNLOAD: "https://github.com/git-for-windows/git/releases/download/v2.35.2.windows.1/MinGit-2.35.2-64-bit.zip"
   GIT_DIGEST: "61f0f2d9abd7d54fbb81b30519d4aad8be66268e67cfc9d47871010d340821c5"
   ENVAR_DOWNLOAD: "https://github.com/GsNSIS/EnVar/releases/download/v0.3.1/EnVar-Plugin.zip"
