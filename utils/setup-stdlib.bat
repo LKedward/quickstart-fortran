@@ -6,7 +6,7 @@ setlocal
 set ORIG=%cd%
 set ROOT=%~dp0..
 
-set GCCVER=11.2.0
+set GCCVER=12.2.0
 set PREFIX=%ROOT%\mingw64
 set INCLUDE_PATH=lib\gcc\x86_64-w64-mingw32\%GCCVER%\finclude\
 
