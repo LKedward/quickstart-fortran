@@ -45,13 +45,13 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: fortran-lang/fpm
-        ref: v0.6.0
+        ref: v0.8.2
         path: fpm-src
     
     - name: Install fpm for bootstrapping
       uses: fortran-lang/setup-fpm@v3
       with:
-        fpm-version: 'v0.5.0'
+        fpm-version: 'v0.8.0'
 
     - name: Build fpm from source with OpenMP
       run: |
